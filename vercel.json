@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "pip install -r requirements.txt",
+  "installCommand": "pip install --break-system-packages -r requirements.txt || pip install --user -r requirements.txt || true",
+  "buildCommand": "echo 'CLI project - no build step needed'",
   "outputDirectory": ".",
-  "framework": null,
-  "installCommand": "pip install -r requirements.txt"
+  "framework": null
 }
