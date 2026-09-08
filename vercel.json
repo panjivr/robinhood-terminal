@@ -1,13 +1,7 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "terminal.py", "use": "@vercel/python" }
-  ],
-  "routes": [
-    { "src": "/(.*)", "dest": "terminal.py" }
-  ],
-  "env": {
-    "CHAIN_ID": "4663",
-    "RPC_URL": "https://rpc.mainnet.chain.robinhood.com"
-  }
+  "buildCommand": "pip install -r requirements.txt",
+  "outputDirectory": ".",
+  "framework": null,
+  "installCommand": "pip install -r requirements.txt"
 }
