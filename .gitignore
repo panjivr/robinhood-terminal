@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+.robinhood/
+wallet.json
+backtest_results.jsonl
+*.log
+.DS_Store
