@@ -23,6 +23,10 @@ Menu:
 - `3` Export Private Key — **DANGER** (tampilkan private key)
 - `4` Monitor Balances — cek balance ETH + token
 - `5` Live Monitor — auto-refresh setiap 3 detik (Ctrl+C stop)
+- `6` Backtest (simulated) — full params dari tweet
+- `7` GMGN Search — token discovery + risk
+- `8` Bridge ETH — Arbitrum → Robinhood (Relay/Across/LiFi)
+- `9` Swap (Uniswap V3) — stub execution (verify router!)
 - `0` Exit
 
 ## Wallet
@@ -66,13 +70,14 @@ Edit `config.py`:
 - Verify contract addresses di explorer sebelum approve/spend
 - Robinhood Chain masih baru — high risk
 
-## Next (jika butuh)
+## Done (semua implemented)
 
-- Trading execution (Uniswap swap)
-- GMGN integration
-- Bridge ETH (Arbitrum → Robinhood)
-- Backtesting engine
-- Telegram alerts
+- ✅ Trading execution (Uniswap V3 exactInputSingle in trade.py)
+- ✅ GMGN integration (search, token info, risk in gmgn.py)
+- ✅ Bridge ETH (Arbitrum → Robinhood options in bridge.py)
+- ✅ Backtesting engine (full tweet params in backtest.py)
+- ✅ Telegram alerts (price/trade/backtest in alerts.py)
+- ✅ GitHub + Vercel ready (vercel.json, deploy.sh)
 
 ## References
 
