@@ -78,6 +78,24 @@ Edit `config.py`:
 - ✅ Backtesting engine (full tweet params in backtest.py)
 - ✅ Telegram alerts (price/trade/backtest in alerts.py)
 - ✅ GitHub + Vercel ready (vercel.json, deploy.sh)
+- ✅ Auto-deploy via GitHub Actions (push → Vercel, every 15min cron)
+
+## Auto-Deploy Setup (GitHub → Vercel)
+
+1. Di Vercel Dashboard → Project Settings → Copy:
+   - `VERCEL_TOKEN` (Account Settings → Tokens)
+   - `VERCEL_ORG_ID` (Project → Settings → General)
+   - `VERCEL_PROJECT_ID`
+
+2. Di GitHub repo → Settings → Secrets and variables → Actions → Add:
+   - `VERCEL_TOKEN`
+   - `VERCEL_ORG_ID`
+   - `VERCEL_PROJECT_ID`
+
+3. Push ke `master` → auto deploy ke production.
+   - Atau manual: Actions tab → "Deploy to Vercel" → Run workflow
+
+Cron: setiap 15 menit (optional monitoring).
 
 ## References
 
