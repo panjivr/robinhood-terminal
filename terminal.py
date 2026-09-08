@@ -16,6 +16,10 @@ from config import (
 from wallet import show_wallet_info, create_wallet, export_wallet, load_wallet
 from price_monitor import monitor_wallet, live_monitor
 from backtest import BacktestEngine, BacktestResult
+from trade import swap_eth_for_token, swap_exact_input_single
+from gmgn import search_tokens, show_token_table, get_token_info
+from bridge import show_bridge_options, bridge_instructions
+from alerts import send_alert, alert_trade, alert_backtest
 
 console = Console()
 
@@ -39,10 +43,12 @@ def main_menu():
         console.print("  [cyan]4[/cyan] Monitor Balances")
         console.print("  [cyan]5[/cyan] Live Monitor (auto-refresh)")
         console.print("  [cyan]6[/cyan] Backtest (simulated)")
-        console.print("  [cyan]7[/cyan] Live Trade (stub)")
+        console.print("  [cyan]7[/cyan] GMGN Search")
+        console.print("  [cyan]8[/cyan] Bridge ETH (Arbitrum → Robinhood)")
+        console.print("  [cyan]9[/cyan] Swap (Uniswap V3 stub)")
         console.print("  [cyan]0[/cyan] Exit")
 
-        choice = Prompt.ask("\nSelect", choices=["0", "1", "2", "3", "4", "5", "6", "7"], default="1")
+        choice = Prompt.ask("\nSelect", choices=["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"], default="1")
 
         if choice == "0":
             console.print("[yellow]Goodbye![/yellow]")
@@ -74,7 +80,13 @@ def main_menu():
             run_backtest_menu()
 
         elif choice == "7":
-            run_live_trade_stub()
+            run_gmgn_menu()
+
+        elif choice == "8":
+            run_bridge_menu()
+
+        elif choice == "9":
+            run_swap_menu()
 
 
 def run_backtest_menu():
@@ -116,24 +128,38 @@ def run_backtest_menu():
     console.print(f"[dim]Saved to {out}[/dim]")
 
 
-def run_live_trade_stub():
-    console.print("\n[bold red]LIVE TRADE STUB[/bold red]")
-    console.print("This is a placeholder. Real execution requires:")
-    console.print("  - Verified token contract addresses")
-    console.print("  - Uniswap V3/V4 router on Robinhood Chain")
-    console.print("  - approve() + exactInputSingle() calls")
-    console.print("  - Slippage protection + gas estimation")
-    console.print("\n[yellow]Not implemented yet to avoid accidental spends.[/yellow]")
+def run_gmgn_menu():
+    console.print("\n[bold cyan]GMGN Search[/bold cyan]")
+    q = Prompt.ask("Search token symbol or address", default="PONS")
+    tokens = search_tokens(q, limit=8)
+    if tokens:
+        show_token_table(tokens)
+    else:
+        console.print("[yellow]No results or GMGN API unavailable.[/yellow]")
 
-    if Confirm.ask("Show example swap code?"):
-        console.print("""
-from web3 import Web3
-# Example (DO NOT RUN without verification):
-# router = w3.eth.contract(address=ROUTER, abi=UNISWAP_V3_ROUTER_ABI)
-# tx = router.functions.exactInputSingle({...}).build_transaction({...})
-# signed = w3.eth.account.sign_transaction(tx, private_key)
-# w3.eth.send_raw_transaction(signed.rawTransaction)
-        """)
+
+def run_bridge_menu():
+    show_bridge_options()
+    amt = float(Prompt.ask("ETH amount to bridge", default="0.05"))
+    br = Prompt.ask("Bridge", choices=["relay", "across", "lifi", "canonical"], default="relay")
+    bridge_instructions(amt, br)
+
+
+def run_swap_menu():
+    console.print("\n[bold red]SWAP (stub — verify router/token addresses first!)[/bold red]")
+    console.print("Router: 0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45 (verify!)")
+    token = Prompt.ask("Token out address (or known name)", default="PONS")
+    amt = float(Prompt.ask("ETH amount", default="0.0176"))
+
+    if not Confirm.ask(f"Swap {amt} ETH → {token[:10]}...? (DANGER: real tx)"):
+        return
+
+    try:
+        tx = swap_eth_for_token(token if token.startswith("0x") else "0x39dbed3a2bd333467115de45665cc57f813c4571", amt)
+        console.print(f"[green]TX:[/green] {tx}")
+        alert_trade(token, "buy", amt, 0.0)
+    except Exception as e:
+        console.print(f"[red]Swap failed:[/red] {e}")
 
 
 if __name__ == "__main__":
